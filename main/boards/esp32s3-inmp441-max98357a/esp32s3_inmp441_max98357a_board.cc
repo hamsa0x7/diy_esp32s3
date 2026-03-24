@@ -17,6 +17,10 @@
 #include <esp_vfs_fat.h>
 #include <sdmmc_cmd.h>
 
+#ifdef SH1106
+#include <esp_lcd_panel_sh1106.h>
+#endif
+
 #define TAG "ESP32S3_INMP441_MAX98357A"
 
 class Esp32S3Inmp441Max98357aBoard : public WifiBoard {
@@ -84,7 +88,11 @@ private:
         };
         panel_config.vendor_config = &ssd1306_config;
 
+#ifdef SH1106
+        err = esp_lcd_new_panel_sh1106(panel_io_, &panel_config, &panel_);
+#else
         err = esp_lcd_new_panel_ssd1306(panel_io_, &panel_config, &panel_);
+#endif
         if (err != ESP_OK) {
             ESP_LOGW(TAG, "SSD1306 panel init failed: %s", esp_err_to_name(err));
             return false;

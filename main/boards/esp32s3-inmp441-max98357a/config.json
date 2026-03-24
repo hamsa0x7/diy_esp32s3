@@ -3,7 +3,9 @@
     "builds": [
         {
             "name": "esp32s3-inmp441-max98357a",
-            "sdkconfig_append": []
+            "sdkconfig_append": [
+                "CONFIG_OLED_SSD1306_128X64=y"
+            ]
         }
     ]
 }
