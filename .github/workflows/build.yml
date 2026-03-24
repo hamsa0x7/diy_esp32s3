@@ -9,6 +9,12 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      board:
+        description: Board type to build
+        required: false
+        default: esp32s3-inmp441-max98357a
+        type: string
 
 permissions:
   contents: read
@@ -37,12 +43,20 @@ jobs:
         name: Select variants based on changes
         env:
           ALL_VARIANTS: ${{ steps.list.outputs.all_variants }}
+          DISPATCH_BOARD: ${{ github.event.inputs.board }}
         run: |
           EVENT_NAME="${{ github.event_name }}"
 
-          # For push and manual dispatch, build all variants
-          if [[ "$EVENT_NAME" == "push" || "$EVENT_NAME" == "workflow_dispatch" ]]; then
+          # On push to main, build all variants
+          if [[ "$EVENT_NAME" == "push" ]]; then
             echo "variants=$ALL_VARIANTS" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # On manual dispatch, build only the selected board
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            FILTERED=$(echo "$ALL_VARIANTS" | jq -c --arg board "$DISPATCH_BOARD" 'map(select(.board == $board))')
+            echo "variants=$FILTERED" >> $GITHUB_OUTPUT
             exit 0
           fi
 
