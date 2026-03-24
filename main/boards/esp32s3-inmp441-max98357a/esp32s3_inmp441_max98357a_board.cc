@@ -34,7 +34,7 @@ private:
 
     bool InitializeDisplayI2c() {
         i2c_master_bus_config_t bus_config = {
-            .i2c_port = I2C_NUM_1,
+            .i2c_port = I2C_NUM_0,
             .sda_io_num = DISPLAY_SDA_PIN,
             .scl_io_num = DISPLAY_SCL_PIN,
             .clk_source = I2C_CLK_SRC_DEFAULT,
@@ -53,12 +53,7 @@ private:
         return true;
     }
 
-    void InitializeDisplay() {
-        display_ = new NoDisplay();
-        if (!InitializeDisplayI2c()) {
-            return;
-        }
-
+    bool InitializeSsd1306Display() {
         esp_lcd_panel_io_i2c_config_t io_config = {
             .dev_addr = 0x3C,
             .on_color_trans_done = nullptr,
@@ -77,7 +72,7 @@ private:
         auto err = esp_lcd_new_panel_io_i2c_v2(display_i2c_bus_, &io_config, &panel_io_);
         if (err != ESP_OK) {
             ESP_LOGW(TAG, "SSD1306 panel IO init failed: %s", esp_err_to_name(err));
-            return;
+            return false;
         }
 
         esp_lcd_panel_dev_config_t panel_config = {};
@@ -92,16 +87,29 @@ private:
         err = esp_lcd_new_panel_ssd1306(panel_io_, &panel_config, &panel_);
         if (err != ESP_OK) {
             ESP_LOGW(TAG, "SSD1306 panel init failed: %s", esp_err_to_name(err));
-            return;
+            return false;
         }
 
         if (esp_lcd_panel_reset(panel_) != ESP_OK || esp_lcd_panel_init(panel_) != ESP_OK) {
             ESP_LOGW(TAG, "SSD1306 panel reset/init failed");
-            return;
+            return false;
         }
 
         esp_lcd_panel_invert_color(panel_, false);
         esp_lcd_panel_disp_on_off(panel_, true);
+        return true;
+    }
+
+    void InitializeDisplay() {
+        display_ = new NoDisplay();
+        if (!InitializeDisplayI2c()) {
+            return;
+        }
+
+        if (!InitializeSsd1306Display()) {
+            return;
+        }
+
         delete display_;
         display_ = new OledDisplay(panel_io_, panel_, DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
     }

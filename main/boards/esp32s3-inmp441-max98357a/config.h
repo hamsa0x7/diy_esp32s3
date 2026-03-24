@@ -8,8 +8,7 @@
 #define AUDIO_INPUT_SAMPLE_RATE  24000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
-// External wiring mapped only to GPIOs that remain free after the fixed
-// camera, SDMMC, USB, and BOOT assignments on the ESP32-S3 CAM board.
+// Keep audio off the known-good OLED bus and fixed camera pins.
 #define AUDIO_I2S_GPIO_BCLK GPIO_NUM_14
 #define AUDIO_I2S_GPIO_WS   GPIO_NUM_21
 #define AUDIO_I2S_GPIO_DIN  GPIO_NUM_46
@@ -21,17 +20,15 @@
 #define KEY3_BUTTON_GPIO GPIO_NUM_NC
 #define KEY4_BUTTON_GPIO GPIO_NUM_NC
 
-// SSD1315 is driven through the SSD1306-compatible path used by Xiaozhi.
-// This uses the currently free board pins and leaves GPIO45/GPIO48 available
-// for future expansion such as external buttons or WS2812 strips.
-#define DISPLAY_SCL_PIN GPIO_NUM_1
-#define DISPLAY_SDA_PIN GPIO_NUM_3
+// Match the known-good OLED wiring used by v2.2.4 bread-compact-wifi.
+#define DISPLAY_SCL_PIN GPIO_NUM_42
+#define DISPLAY_SDA_PIN GPIO_NUM_41
 #define DISPLAY_WIDTH   128
 #define DISPLAY_HEIGHT  64
 #define DISPLAY_MIRROR_X true
 #define DISPLAY_MIRROR_Y true
 
-#define SDCARD_SDMMC_ENABLED 1
+#define SDCARD_SDMMC_ENABLED 0
 #define SDCARD_MOUNT_POINT "/sdcard"
 #define SDCARD_SDMMC_CLK_PIN GPIO_NUM_39
 #define SDCARD_SDMMC_CMD_PIN GPIO_NUM_38
