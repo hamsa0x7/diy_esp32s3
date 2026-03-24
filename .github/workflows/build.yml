@@ -27,7 +27,7 @@ jobs:
       variants: ${{ steps.select.outputs.variants }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -63,7 +63,7 @@ jobs:
             exit 0
           fi
 
-          # pull_request 场景
+          # pull_request scenario
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
           HEAD_SHA="${{ github.event.pull_request.head.sha }}"
           echo "Base: $BASE_SHA, Head: $HEAD_SHA"
@@ -105,7 +105,7 @@ jobs:
     needs: prepare
     if: ${{ needs.prepare.outputs.variants != '[]' }}
     strategy:
-      fail-fast: false  # 单个变体失败不影响其它变体
+      fail-fast: false  # A single variant failure should not block others
       matrix:
         include: ${{ fromJson(needs.prepare.outputs.variants) }}
     runs-on: ubuntu-latest
@@ -113,7 +113,7 @@ jobs:
       image: espressif/idf:v5.5.2
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build current variant
         shell: bash
@@ -122,7 +122,7 @@ jobs:
           python scripts/release.py ${{ matrix.board }} --name ${{ matrix.name }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: xiaozhi_${{ matrix.full_name }}_${{ github.sha }}
           path: build/merged-binary.bin
