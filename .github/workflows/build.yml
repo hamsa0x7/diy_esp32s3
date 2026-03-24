@@ -46,16 +46,19 @@ jobs:
           DISPATCH_BOARD: ${{ github.event.inputs.board }}
         run: |
           EVENT_NAME="${{ github.event_name }}"
+          DEFAULT_BOARD="esp32s3-inmp441-max98357a"
 
-          # On push to main, build all variants
+          # On push to main, build only the custom ESP32-S3 board
           if [[ "$EVENT_NAME" == "push" ]]; then
-            echo "variants=$ALL_VARIANTS" >> $GITHUB_OUTPUT
+            FILTERED=$(echo "$ALL_VARIANTS" | jq -c --arg board "$DEFAULT_BOARD" 'map(select(.board == $board))')
+            echo "variants=$FILTERED" >> $GITHUB_OUTPUT
             exit 0
           fi
 
           # On manual dispatch, build only the selected board
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            FILTERED=$(echo "$ALL_VARIANTS" | jq -c --arg board "$DISPATCH_BOARD" 'map(select(.board == $board))')
+            BOARD_TO_BUILD="${DISPATCH_BOARD:-$DEFAULT_BOARD}"
+            FILTERED=$(echo "$ALL_VARIANTS" | jq -c --arg board "$BOARD_TO_BUILD" 'map(select(.board == $board))')
             echo "variants=$FILTERED" >> $GITHUB_OUTPUT
             exit 0
           fi
