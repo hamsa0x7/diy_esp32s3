@@ -18,13 +18,14 @@ Recommended external wiring:
 - I2S clocks: `BCLK=GPIO14`, `LRCLK=GPIO21`
 - I2S mic data: `GPIO46`
 - I2S speaker data: `GPIO47`
-- Optional keys: `GPIO43`, `GPIO44`, `GPIO45`, `GPIO48`
 
 Notes:
 
-- `GPIO43` and `GPIO44` share the onboard USB-serial TX/RX indicator lines.
-- `GPIO48` shares the onboard WS2812 line.
-- `GPIO35`, `GPIO36`, and `GPIO37` are not used for external keys on this board.
+- Optional external keys are disabled in the board profile for now.
+- `GPIO45` is left free for future expansion.
+- `GPIO48` is left free and is a good candidate for future WS2812 strip output.
+- If you want an external strip to mirror the onboard RGB LED, you can also use
+  the same `GPIO48` data line.
 
 Build with:
 
