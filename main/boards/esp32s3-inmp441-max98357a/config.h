@@ -16,10 +16,13 @@
 #define AUDIO_I2S_GPIO_DOUT GPIO_NUM_47
 
 #define BOOT_BUTTON_GPIO GPIO_NUM_0
-#define KEY1_BUTTON_GPIO GPIO_NUM_35
-#define KEY2_BUTTON_GPIO GPIO_NUM_36
-#define KEY3_BUTTON_GPIO GPIO_NUM_37
-#define KEY4_BUTTON_GPIO GPIO_NUM_45
+#define KEY1_BUTTON_GPIO GPIO_NUM_43
+#define KEY2_BUTTON_GPIO GPIO_NUM_44
+#define KEY3_BUTTON_GPIO GPIO_NUM_45
+
+// GPIO43/GPIO44 share the USB-serial TX/RX indicators, and GPIO48 shares the
+// onboard WS2812. These remain optional button pins for later wiring.
+#define KEY4_BUTTON_GPIO GPIO_NUM_48
 
 // SSD1315 is driven through the SSD1306-compatible path used by Xiaozhi.
 #define DISPLAY_SCL_PIN GPIO_NUM_1
